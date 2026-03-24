@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data //adds getters, setters, equals ans toString
 @Entity //says its table in h2
-@Table(name = "products")
+@Table(name = "product")
 public class Product {
 
     @Id
