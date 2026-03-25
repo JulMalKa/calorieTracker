@@ -1,7 +1,7 @@
 package com.juliamal.calorietracker.service;
 
-import com.juliamal.calorietracker.model.User;
-import com.juliamal.calorietracker.repository.UserRepository;
+import com.juliamal.calorietracker.model.Users;
+import com.juliamal.calorietracker.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,36 +9,36 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UsersService {
 
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<Users> getAllUsers() {
+        return usersRepository.findAll();
     }
 
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public Users addUser(Users users) {
+        return usersRepository.save(users);
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public Users getUserById(Long id) {
+        return usersRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
     }
 
-    public User updateUser(Long id, User updatedUser) {
-        User existing = getUserById(id);
+    public Users updateUser(Long id, Users updatedUser) {
+        Users existing = getUserById(id);
         existing.setUsername(updatedUser.getUsername());
         existing.setEmail(updatedUser.getEmail());
         existing.setAge(updatedUser.getAge());
         existing.setWeight(updatedUser.getWeight());
         existing.setHeight(updatedUser.getHeight());
         existing.setDailyCalorieGoal(updatedUser.getDailyCalorieGoal());
-        return userRepository.save(existing);
+        return usersRepository.save(existing);
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        usersRepository.deleteById(id);
     }
 
 }

@@ -1,9 +1,9 @@
 package com.juliamal.calorietracker;
 
 import com.juliamal.calorietracker.model.Product;
-import com.juliamal.calorietracker.model.User;
+import com.juliamal.calorietracker.model.Users;
 import com.juliamal.calorietracker.repository.ProductRepository;
-import com.juliamal.calorietracker.repository.UserRepository;
+import com.juliamal.calorietracker.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 public class DataLoader implements CommandLineRunner {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     @Override
     public void run(String... args) {
@@ -26,8 +26,8 @@ public class DataLoader implements CommandLineRunner {
                 createProduct("Banan", 89.0, 1.1, 23.0, 0.3),
                 createProduct("Łosoś", 208.0, 20.0, 0.0, 13.0)
         ));
-        userRepository.saveAll(List.of(
-                createUser("Julia", "julia@email.com", 25, 60.0, 168.0, 2000)
+        usersRepository.saveAll(List.of(
+                createUser("Julia", "julia@email.com", "haslo", 25, 60.0, 168.0, 2000)
         ));
     }
 
@@ -41,10 +41,11 @@ public class DataLoader implements CommandLineRunner {
         return p;
     }
 
-    private User createUser(String name, String email, Integer age, Double weight, Double height, Integer dailyCalorieGoal) {
-        User u = new User();
-        u.setUsername(name);
+    private Users createUser(String username, String email, String password, Integer age, Double weight, Double height, Integer dailyCalorieGoal) {
+        Users u = new Users();
+        u.setUsername(username);
         u.setEmail(email);
+        u.setPassword(password);
         u.setAge(age);
         u.setWeight(weight);
         u.setHeight(height);
