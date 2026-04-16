@@ -1,7 +1,10 @@
 package com.juliamal.calorietracker.controller;
 
+import com.juliamal.calorietracker.dto.response.UserResponse;
+import com.juliamal.calorietracker.mappers.UserMapper;
 import com.juliamal.calorietracker.model.Users;
 import com.juliamal.calorietracker.service.UsersService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,25 +15,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsersController {
     private final UsersService usersService;
+    private final UserMapper userMapper;
 
     @GetMapping
-    public List<Users> getAllUsers() {
-        return usersService.getAllUsers();
+    public List<UserResponse> getAllUsers() {
+        return userMapper.toDtoList(usersService.getAllUsers());
     }
 
     @PostMapping
-    public ResponseEntity<Users> addUser(@RequestBody Users users) {
-        return ResponseEntity.ok(usersService.addUser(users));
+    public ResponseEntity<UserResponse> addUser(@Valid @RequestBody Users user) {
+        return ResponseEntity.ok(userMapper.toDto(usersService.addUser(user)));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Users> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(usersService.getUserById(id));
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userMapper.toDto(usersService.getUserById(id)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Users> updateUser(@PathVariable Long id, @RequestBody Users users) {
-        return ResponseEntity.ok(usersService.updateUser(id, users));
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody Users user) {
+        return ResponseEntity.ok(userMapper.toDto(usersService.updateUser(id, user)));
     }
 
     @DeleteMapping("/{id}")

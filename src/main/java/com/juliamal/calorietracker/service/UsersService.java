@@ -3,6 +3,7 @@ package com.juliamal.calorietracker.service;
 import com.juliamal.calorietracker.model.Users;
 import com.juliamal.calorietracker.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,18 +13,20 @@ import java.util.List;
 public class UsersService {
 
     private final UsersRepository usersRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<Users> getAllUsers() {
         return usersRepository.findAll();
     }
 
-    public Users addUser(Users users) {
-        return usersRepository.save(users);
+    public Users addUser(Users user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return usersRepository.save(user);
     }
 
     public Users getUserById(Long id) {
         return usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Użytkownik nie znaleziony"));
+                .orElseThrow(() -> new RuntimeException("No such user found with id: " + id));
     }
 
     public Users updateUser(Long id, Users updatedUser) {
@@ -34,6 +37,9 @@ public class UsersService {
         existing.setWeight(updatedUser.getWeight());
         existing.setHeight(updatedUser.getHeight());
         existing.setDailyCalorieGoal(updatedUser.getDailyCalorieGoal());
+        existing.setDailyProteinGoal(updatedUser.getDailyProteinGoal());
+        existing.setDailyCarbsGoal(updatedUser.getDailyCarbsGoal());
+        existing.setDailyFatGoal(updatedUser.getDailyFatGoal());
         return usersRepository.save(existing);
     }
 
