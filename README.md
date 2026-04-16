@@ -1,2 +1,7 @@
-# calorieTracker
-app built to track calories 
+# Calorie Tracker
+
+Calorie Tracker is a simple backend application developed in Java using the Spring Boot framework. The project was created to practice application building and working with relational databases, utilizing Spring Data JPA and Hibernate. Maven is used as the build automation and dependency management tool.
+
+The application is designed to track daily calorie intake and macronutrients. Its core functionality involves managing user profiles, which include information such as height, weight, and a calculated daily calorie goal. The system is based on a product database with predefined nutritional values per 100 grams. The mechanism allows users to create specific meals on a given day and assign consumed products to them along with their exact weight. Based on this data, the application calculates the total caloric intake to assist in diet management.
+
+To test the project locally, clone the repository and open it in an integrated development environment, such as IntelliJ IDEA. After downloading the dependencies and running the application, a built-in data loading mechanism automatically populates the database with a sample user, a list of products, and meal entries for the current day, allowing for immediate verification of the application logic.
