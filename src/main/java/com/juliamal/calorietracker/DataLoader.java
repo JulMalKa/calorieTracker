@@ -1,3 +1,4 @@
+/*
 package com.juliamal.calorietracker;
 
 import com.juliamal.calorietracker.model.Meal;
@@ -112,3 +113,5 @@ public class DataLoader implements CommandLineRunner {
         return entry;
     }
 }
+
+ */

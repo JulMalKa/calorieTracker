@@ -6,8 +6,8 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "meal_entries")
-public class MealEntry {   //ilosc produktu w posilku
+@Table(name = "meal_entry")
+public class MealEntry {   //pozycja w posilku
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
