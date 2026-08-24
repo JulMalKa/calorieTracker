@@ -30,3 +30,4 @@ public class Product {
     @Min(value = 0, message = "Fat cannot be negative")
     private Double fat;
 }
+

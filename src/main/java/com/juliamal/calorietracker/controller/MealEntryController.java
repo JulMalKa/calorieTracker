@@ -27,9 +27,9 @@ public class MealEntryController {
     }
 
     @GetMapping
-    public List<MealEntryResponse> getEntriesForMeal(@PathVariable Long mealId) {
+    public ResponseEntity<List<MealEntryResponse>> getEntriesForMeal(@PathVariable Long mealId) {
         var entries = mealEntryService.getEntriesForMeal(mealId);
-        return mealEntryMapper.toDtoList(entries);
+        return ResponseEntity.ok(mealEntryMapper.toDtoList(entries));
     }
 
     @DeleteMapping("/{id}")

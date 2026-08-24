@@ -1,5 +1,6 @@
 package com.juliamal.calorietracker.service;
 
+import com.juliamal.calorietracker.dto.request.UserRequest;
 import com.juliamal.calorietracker.model.Users;
 import com.juliamal.calorietracker.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,18 @@ public class UsersService {
         return usersRepository.findAll();
     }
 
-    public Users addUser(Users user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public Users addUser(UserRequest request) {
+        Users user = new Users();
+        user.setUsername(request.username());
+        user.setEmail(request.email());
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setAge(request.age());
+        user.setWeight(request.weight());
+        user.setHeight(request.height());
+        user.setDailyCalorieGoal(request.dailyCalorieGoal());
+        user.setDailyProteinGoal(request.dailyProteinGoal());
+        user.setDailyCarbsGoal(request.dailyCarbsGoal());
+        user.setDailyFatGoal(request.dailyFatGoal());
         return usersRepository.save(user);
     }
 
@@ -29,17 +40,20 @@ public class UsersService {
                 .orElseThrow(() -> new RuntimeException("No such user found with id: " + id));
     }
 
-    public Users updateUser(Long id, Users updatedUser) {
+    public Users updateUser(Long id, UserRequest request) {
         Users existing = getUserById(id);
-        existing.setUsername(updatedUser.getUsername());
-        existing.setEmail(updatedUser.getEmail());
-        existing.setAge(updatedUser.getAge());
-        existing.setWeight(updatedUser.getWeight());
-        existing.setHeight(updatedUser.getHeight());
-        existing.setDailyCalorieGoal(updatedUser.getDailyCalorieGoal());
-        existing.setDailyProteinGoal(updatedUser.getDailyProteinGoal());
-        existing.setDailyCarbsGoal(updatedUser.getDailyCarbsGoal());
-        existing.setDailyFatGoal(updatedUser.getDailyFatGoal());
+        existing.setUsername(request.username());
+        existing.setEmail(request.email());
+        if (request.password() != null && !request.password().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(request.password()));
+        }
+        existing.setAge(request.age());
+        existing.setWeight(request.weight());
+        existing.setHeight(request.height());
+        existing.setDailyCalorieGoal(request.dailyCalorieGoal());
+        existing.setDailyProteinGoal(request.dailyProteinGoal());
+        existing.setDailyCarbsGoal(request.dailyCarbsGoal());
+        existing.setDailyFatGoal(request.dailyFatGoal());
         return usersRepository.save(existing);
     }
 

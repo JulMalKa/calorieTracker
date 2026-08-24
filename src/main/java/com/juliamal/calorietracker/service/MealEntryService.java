@@ -18,9 +18,9 @@ public class MealEntryService {
 
     public MealEntry addMealEntry(MealEntryRequest request) {
         MealEntry entry = new MealEntry();
-        entry.setMeal(mealService.getMealById(request.getMealId()));
-        entry.setProduct(productService.getProductById(request.getProductId()));
-        entry.setAmountInGrams(request.getAmountInGrams());
+        entry.setMeal(mealService.getMealById(request.mealId()));
+        entry.setProduct(productService.getProductById(request.productId()));
+        entry.setAmountInGrams(request.amountInGrams());
         return mealEntryRepository.save(entry);
     }
 

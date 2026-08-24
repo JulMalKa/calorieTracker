@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {MealEntryMapper.class})
 public interface MealMapper {
-    @Mapping(source = "entries", target = "entries")
+    //@Mapping(source = "entries", target = "entries")
     @Mapping(target = "totalCalories", ignore = true)
     MealResponse toDto(Meal meal);
 

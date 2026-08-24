@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MacroSummary {
+public class MacroSummaryResponse {
     private Double totalCalories;
     private Double totalProtein;
     private Double totalCarbs;

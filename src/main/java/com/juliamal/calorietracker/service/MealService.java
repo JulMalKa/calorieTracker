@@ -2,7 +2,7 @@ package com.juliamal.calorietracker.service;
 
 import com.juliamal.calorietracker.dto.request.MealRequest;
 import com.juliamal.calorietracker.dto.response.DailySummaryResponse;
-import com.juliamal.calorietracker.dto.response.MacroSummary;
+import com.juliamal.calorietracker.dto.response.MacroSummaryResponse;
 import com.juliamal.calorietracker.dto.response.MealResponse;
 import com.juliamal.calorietracker.mappers.MealMapper;
 import com.juliamal.calorietracker.model.Meal;
@@ -23,17 +23,17 @@ public class MealService {
 
     public Meal createMeal(MealRequest request) {
         mealRepository.findByUserIdAndDateAndMealType(
-                        request.getUserId(),
-                        request.getDate(),
-                        request.getMealType())
+                        request.userId(),
+                        request.date(),
+                        request.mealType())
                 .ifPresent(m -> {
                     throw new IllegalStateException("This meal type already exists for this day");
                 });
 
         Meal meal = new Meal();
-        meal.setUser(usersService.getUserById(request.getUserId()));
-        meal.setMealType(request.getMealType());
-        meal.setDate(request.getDate());
+        meal.setUser(usersService.getUserById(request.userId()));
+        meal.setMealType(request.mealType());
+        meal.setDate(request.date());
         return mealRepository.save(meal);
     }
 
@@ -42,8 +42,19 @@ public class MealService {
                 .orElseThrow(() -> new IllegalStateException("This meal doesnt exist"));
     }
 
-    public List<Meal> getMealsForUser(Long userId) {
-        return mealRepository.findByUserId(userId);
+    public List<MealResponse> getMealsForUser(Long userId) {
+        List<Meal> meals = mealRepository.findByUserId(userId);
+        return meals.stream()
+                .map(meal -> {
+                    MealResponse response = mealMapper.toDto(meal);
+                    MacroSummaryResponse macros = calculateMacrosForMeal(meal);
+                    response.setTotalCalories(macros.getTotalCalories());
+                    response.setTotalProtein(macros.getTotalProtein());
+                    response.setTotalCarbs(macros.getTotalCarbs());
+                    response.setTotalFat(macros.getTotalFat());
+                    return response;
+                })
+                .toList();
     }
 
     public List<Meal> getMealsForUserAndDate(Long userId, LocalDate date) {
@@ -54,9 +65,9 @@ public class MealService {
         mealRepository.deleteById(id);
     }
 
-    private MacroSummary calculateMacrosForMeal(Meal meal) {
+    private MacroSummaryResponse calculateMacrosForMeal(Meal meal) {
         if (meal.getEntries() == null || meal.getEntries().isEmpty()) {
-            return new MacroSummary(0.0, 0.0, 0.0, 0.0);
+            return new MacroSummaryResponse(0.0, 0.0, 0.0, 0.0);
         }
         double calories = 0.0, protein = 0.0, carbs = 0.0, fat = 0.0;
         for (var entry : meal.getEntries()) {
@@ -66,13 +77,13 @@ public class MealService {
             carbs    += entry.getProduct().getCarbs()           * ratio;
             fat      += entry.getProduct().getFat()             * ratio;
         }
-        return new MacroSummary(calories, protein, carbs, fat);
+        return new MacroSummaryResponse(calories, protein, carbs, fat);
     }
 
     public MealResponse getMealWithCalories(Long mealId) {
         Meal meal = getMealById(mealId);
         MealResponse response = mealMapper.toDto(meal);
-        MacroSummary macros = calculateMacrosForMeal(meal);
+        MacroSummaryResponse macros = calculateMacrosForMeal(meal);
         response.setTotalCalories(macros.getTotalCalories());
         response.setTotalProtein(macros.getTotalProtein());
         response.setTotalCarbs(macros.getTotalCarbs());
@@ -89,7 +100,7 @@ public class MealService {
         List<MealResponse> mealResponses = meals.stream()
                 .map(meal -> {
                     MealResponse response = mealMapper.toDto(meal);
-                    MacroSummary macros = calculateMacrosForMeal(meal);
+                    MacroSummaryResponse macros = calculateMacrosForMeal(meal);
                     response.setTotalCalories(macros.getTotalCalories());
                     response.setTotalProtein(macros.getTotalProtein());
                     response.setTotalCarbs(macros.getTotalCarbs());
