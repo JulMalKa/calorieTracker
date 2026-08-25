@@ -1,6 +1,7 @@
 package com.juliamal.calorietracker.service;
 
 import com.juliamal.calorietracker.dto.request.UserRequest;
+import com.juliamal.calorietracker.exception.ResourceNotFoundException;
 import com.juliamal.calorietracker.model.Users;
 import com.juliamal.calorietracker.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class UsersService {
 
     public Users getUserById(Long id) {
         return usersRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No such user found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", id));
     }
 
     public Users updateUser(Long id, UserRequest request) {
@@ -58,6 +59,9 @@ public class UsersService {
     }
 
     public void deleteUser(Long id) {
+        if (!usersRepository.existsById(id)) {
+            throw new ResourceNotFoundException("User", id);
+        }
         usersRepository.deleteById(id);
     }
 

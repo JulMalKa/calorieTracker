@@ -4,6 +4,8 @@ import com.juliamal.calorietracker.dto.request.MealRequest;
 import com.juliamal.calorietracker.dto.response.DailySummaryResponse;
 import com.juliamal.calorietracker.dto.response.MacroSummaryResponse;
 import com.juliamal.calorietracker.dto.response.MealResponse;
+import com.juliamal.calorietracker.exception.DuplicateResourceException;
+import com.juliamal.calorietracker.exception.ResourceNotFoundException;
 import com.juliamal.calorietracker.mappers.MealMapper;
 import com.juliamal.calorietracker.model.Meal;
 import com.juliamal.calorietracker.model.Users;
@@ -27,7 +29,7 @@ public class MealService {
                         request.date(),
                         request.mealType())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("This meal type already exists for this day");
+                    throw new DuplicateResourceException("This meal type already exists for this day");
                 });
 
         Meal meal = new Meal();
@@ -39,7 +41,7 @@ public class MealService {
 
     public Meal getMealById(Long id) {
         return mealRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("This meal doesnt exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Meal", id));
     }
 
     public List<MealResponse> getMealsForUser(Long userId) {
@@ -62,6 +64,9 @@ public class MealService {
     }
 
     public void deleteMeal(Long id) {
+        if (!mealRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Meal", id);
+        }
         mealRepository.deleteById(id);
     }
 

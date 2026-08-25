@@ -1,6 +1,7 @@
 package com.juliamal.calorietracker.service;
 
 import com.juliamal.calorietracker.dto.request.MealEntryRequest;
+import com.juliamal.calorietracker.exception.ResourceNotFoundException;
 import com.juliamal.calorietracker.model.MealEntry;
 import com.juliamal.calorietracker.repository.MealEntryRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,9 @@ public class MealEntryService {
     }
 
     public void deleteMealEntry(Long id) {
+        if (!mealEntryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("MealEntry", id);
+        }
         mealEntryRepository.deleteById(id);
     }
 }

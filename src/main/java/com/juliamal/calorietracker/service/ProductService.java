@@ -1,6 +1,7 @@
 package com.juliamal.calorietracker.service;
 
 import com.juliamal.calorietracker.dto.request.ProductRequest;
+import com.juliamal.calorietracker.exception.ResourceNotFoundException;
 import com.juliamal.calorietracker.model.Product;
 import com.juliamal.calorietracker.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", id));
     }
 
     public Product updateProduct(Long id, ProductRequest request) {
@@ -43,6 +44,9 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Product", id);
+        }
         productRepository.deleteById(id);
     }
 }
