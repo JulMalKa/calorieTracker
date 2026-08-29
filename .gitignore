@@ -24,3 +24,5 @@ target/
 .vscode/
 
 *.log
+
+.env

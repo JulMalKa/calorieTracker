@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  calorieapp:
+    build: .
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_JPA_DEFER_DATASOURCE_INITIALIZATION=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+volumes:
+  pgdata:
+
+
+
